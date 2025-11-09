@@ -1,36 +1,170 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Data Orchestration UI
 
-## Getting Started
+CopilotKit-powered frontend interface for the Data Orchestration Agent.
 
-First, run the development server:
+## Features
 
+- **Split-Panel Interface**: Chat interface on the left, state visualizations on the right
+- **Mode Selector**: Switch between Ask, Planning, and Action modes
+- **Real-time State**: Live agent state and session information display
+- **Tool Visualization**: Monitor tool execution status with visual badges
+- **Responsive Design**: Built with Tailwind CSS for modern, responsive UI
+
+## Prerequisites
+
+- Node.js 18+ 
+- npm or pnpm
+- Running Data Orchestration Agent backend on port 8085
+
+## Installation
+
+1. **Install dependencies**:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. **Configure environment**:
+```bash
+cp .env.local.example .env.local
+# Edit .env.local if your backend is not on localhost:8085
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. **Start development server**:
+```bash
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. **Open browser**:
+Navigate to `http://localhost:3000`
 
-## Learn More
+## Environment Variables
 
-To learn more about Next.js, take a look at the following resources:
+- `NEXT_PUBLIC_COPILOTKIT_URL`: Backend URL (default: `http://localhost:8085`)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+src/
+├── app/
+│   ├── layout.tsx       # Root layout with CopilotKit provider
+│   ├── page.tsx         # Main page with split-panel layout
+│   └── globals.css      # Global styles
+├── components/
+│   ├── ModeSelector.tsx      # Mode switching dropdown
+│   ├── StatePanel.tsx        # Right panel for state display
+│   ├── ToolVisualization.tsx # Tool execution status
+│   └── SessionInfo.tsx       # Session state information
+```
 
-## Deploy on Vercel
+## Development
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+# Start dev server with hot reload
+npm run dev
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+# Build for production
+npm run build
+
+# Start production server
+npm start
+
+# Run linter
+npm run lint
+```
+
+## Docker
+
+Build and run with Docker:
+
+```bash
+# Build image
+docker build -t data-orchestration-ui .
+
+# Run container
+docker run -p 3000:3000 \
+  -e NEXT_PUBLIC_COPILOTKIT_URL=http://host.docker.internal:8085 \
+  data-orchestration-ui
+```
+
+## Usage
+
+### Ask Mode
+- Search for BigQuery datasets
+- Analyze data with SQL queries
+- Query GraphQL APIs
+- Explore data interactively
+
+### Planning Mode
+- Answer guided questions
+- Create Data Product Requirement Prompts (PRPs)
+- Design data products
+
+### Action Mode
+- Execute PRPs
+- Discover source tables
+- Generate SQL queries (with approval)
+- Create GraphQL APIs (with approval)
+
+## Architecture
+
+The frontend connects to the Data Orchestration Agent backend via CopilotKit's AG-UI protocol:
+
+```
+┌─────────────────────────────────────┐
+│   Frontend (Port 3000)              │
+│   - CopilotKit React UI             │
+│   - Split Panel Layout              │
+│   - State Visualizations            │
+└─────────────┬───────────────────────┘
+              │ WebSocket/HTTP
+┌─────────────▼───────────────────────┐
+│   Backend (Port 8085)               │
+│   - Data Orchestration Agent        │
+│   - ADK with CopilotKit Wrapper     │
+│   - MCP Services Integration        │
+└─────────────────────────────────────┘
+```
+
+## Technologies
+
+- **Framework**: Next.js 14 with App Router
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **AI Integration**: CopilotKit (React Core + React UI)
+- **State Management**: React Hooks + CopilotKit useCoAgent
+
+## Troubleshooting
+
+### Backend Connection Issues
+
+If the chat doesn't connect:
+1. Ensure backend is running on port 8085
+2. Check `NEXT_PUBLIC_COPILOTKIT_URL` in `.env.local`
+3. Verify CORS is enabled on backend
+4. Check browser console for errors
+
+### Build Errors
+
+If you get TypeScript errors during build:
+```bash
+rm -rf .next
+npm run build
+```
+
+### Docker Issues
+
+If Docker build fails:
+1. Ensure `.dockerignore` is present
+2. Check that `next.config.ts` has `output: 'standalone'`
+3. Verify Node.js version is 18+
+
+## Contributing
+
+1. Create feature branch
+2. Make changes with proper TypeScript types
+3. Test with running backend
+4. Submit pull request
+
+## License
+
+See LICENSE file for details.
