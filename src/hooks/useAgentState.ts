@@ -26,6 +26,7 @@ interface UseAgentStateReturn {
   isLoading: boolean;
   error: string | null;
   treeData: TreeNode[];
+  isInterrupted: boolean;
   updateQuery: (index: number, updatedQuery: Partial<Query>) => Promise<void>;
   updateDataset: (tableId: string, updatedDataset: Partial<Dataset>) => Promise<void>;
   updateQueryResult: (index: number, updatedResult: Partial<QueryResult>) => Promise<void>;
@@ -52,6 +53,7 @@ export function useAgentState(): UseAgentStateReturn {
   const queries: Query[] = (state?.["user:queries"] as Query[]) || [];
   const datasets: Record<string, Dataset> = (state?.["user:datasets"] as Record<string, Dataset>) || {};
   const queryResults: QueryResult[] = (state?.["user:query_results"] as QueryResult[]) || [];
+  const isInterrupted: boolean = (state?.interrupted as boolean) || false;
 
   // Register actions for updating state
   useCopilotAction({
@@ -224,6 +226,7 @@ export function useAgentState(): UseAgentStateReturn {
     isLoading,
     error,
     treeData,
+    isInterrupted,
     updateQuery,
     updateDataset,
     updateQueryResult,

@@ -9,6 +9,7 @@ import { CopilotChat, CopilotKitCSSProperties } from "@copilotkit/react-ui";
 import ModeSelector from "./ModeSelector";
 import ChatMessageRenderer from "./ChatMessageRenderer";
 import ComposerDropZone from "./ComposerDropZone";
+import QueryConfirmationDialog from "./QueryConfirmationDialog";
 
 const DOT_ANIMATION_DELAYS = [0, 0.2, 0.4] as const;
 
@@ -51,6 +52,9 @@ export default function ChatPanel(): ReactElement {
           RenderMessage={ChatMessageRenderer}
           icons={{ activityIcon }}
         />
+
+        {/* Query Confirmation Dialog for HITL */}
+        <QueryConfirmationDialog />
 
         {/* Drop zone for dragging datasets */}
         <ComposerDropZone />

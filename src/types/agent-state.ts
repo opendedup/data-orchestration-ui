@@ -32,12 +32,24 @@ export interface QueryResult {
 }
 
 /**
+ * Interrupt payload when agent pauses for user confirmation.
+ */
+export interface InterruptPayload {
+  type: string;
+  message: string;
+  query_preview?: string;
+}
+
+/**
  * Complete agent state structure for ask mode.
  */
 export interface AgentState {
   "user:queries": Query[];
   "user:datasets": Record<string, Dataset>;
   "user:query_results": QueryResult[];
+  "user:current_mode"?: string;
+  interrupted?: boolean;
+  interrupt_payload?: InterruptPayload[];
 }
 
 /**
