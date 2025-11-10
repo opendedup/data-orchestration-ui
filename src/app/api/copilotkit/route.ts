@@ -13,7 +13,7 @@ import {
   const runtime = new CopilotRuntime({
     agents: {
       // Our AG-UI endpoint URL
-      "data_orchestration_agent": new HttpAgent({ url: "http://localhost:8085/" }),
+      "langgraph_orchestration_agent": new HttpAgent({ url: "http://localhost:8085/" }),
     }
   });
   // 3. Build a Next.js API route that handles the CopilotKit runtime requests.

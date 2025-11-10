@@ -31,9 +31,11 @@ function TreeNodeItem({
   onSelect: (item: StateItem, type: string, id: string) => void;
 }) {
   const [isExpanded, setIsExpanded] = useState(true);
+  const [isDragging, setIsDragging] = useState(false);
   const hasChildren = node.children && node.children.length > 0;
   const isSelected = selectedId === node.id;
   const isFolder = hasChildren && !node.data;
+  const isDataset = node.type === "datasets" && node.data && !isFolder;
 
   const handleClick = () => {
     if (isFolder) {
@@ -43,8 +45,28 @@ function TreeNodeItem({
     }
   };
 
+  const handleDragStart = (e: React.DragEvent) => {
+    if (!isDataset || !node.data) return;
+    
+    setIsDragging(true);
+    const dataset = node.data as { table_id?: string; details?: string };
+    const dragData = {
+      tableId: dataset.table_id || node.id,
+      label: node.label,
+      details: dataset.details || "",
+    };
+    
+    e.dataTransfer.effectAllowed = "copy";
+    e.dataTransfer.setData("application/json", JSON.stringify(dragData));
+    e.dataTransfer.setData("text/plain", dragData.tableId);
+  };
+
+  const handleDragEnd = () => {
+    setIsDragging(false);
+  };
+
   const getIcon = () => {
-    const sharedClasses = "w-4 h-4 text-gray-400";
+    const sharedClasses = "w-4 h-4 text-gray-200";
     if (node.type === "datasets") {
       return <Database className={sharedClasses} />;
     }
@@ -60,11 +82,16 @@ function TreeNodeItem({
         className={clsx(
           "flex items-center gap-2 py-1.5 px-2 cursor-pointer rounded transition-colors",
           "hover:bg-gray-700",
-          isSelected && "bg-gray-600",
-          !isFolder && "ml-4"
+          isSelected && "bg-gray-700",
+          !isFolder && "ml-4",
+          isDragging && "opacity-50",
+          isDataset && "cursor-grab active:cursor-grabbing"
         )}
         style={{ paddingLeft: `${level * 12 + 8}px` }}
         onClick={handleClick}
+        draggable={isDataset}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
       >
         {hasChildren && (
           <button
@@ -75,9 +102,9 @@ function TreeNodeItem({
             }}
           >
             {isExpanded ? (
-              <ChevronDown className="w-4 h-4 text-gray-400" />
+              <ChevronDown className="w-4 h-4 text-gray-200" />
             ) : (
-              <ChevronRight className="w-4 h-4 text-gray-400" />
+              <ChevronRight className="w-4 h-4 text-gray-200" />
             )}
           </button>
         )}
@@ -86,13 +113,13 @@ function TreeNodeItem({
         <span
           className={clsx(
             "flex-1 text-sm truncate",
-            isFolder ? "font-semibold text-gray-200" : "text-gray-300"
+            isFolder ? "font-semibold text-gray-100" : "text-gray-100"
           )}
         >
           {node.label}
         </span>
         {node.timestamp && (
-          <span className="text-xs text-gray-500">
+          <span className="text-xs text-gray-300">
             {new Date(node.timestamp).toLocaleDateString()}
           </span>
         )}
@@ -119,7 +146,6 @@ function TreeNodeItem({
  */
 export default function StateTreeView({
   treeData,
-  selectedItem,
   onSelectItem,
 }: StateTreeViewProps) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -131,20 +157,26 @@ export default function StateTreeView({
 
   if (treeData.length === 0) {
     return (
-      <div className="h-full flex items-center justify-center p-6">
-        <div className="text-center text-gray-400">
-          <Database className="w-12 h-12 mx-auto mb-3 opacity-50" />
-          <p className="text-sm">No data yet</p>
-          <p className="text-xs mt-1">Start exploring datasets in Ask Mode</p>
+      <div
+        className="h-full flex items-center justify-center p-6"
+        style={{ backgroundColor: "var(--background)" }}
+      >
+        <div className="text-center text-gray-200">
+          <Database className="w-12 h-12 mx-auto mb-3 opacity-80" />
+          <p className="text-sm text-gray-100">No data yet</p>
+          <p className="text-xs mt-1 text-gray-200">Start exploring datasets in Ask Mode</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="h-full overflow-y-auto p-2">
-      <div className="mb-3 px-2">
-        <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide">
+    <div
+      className="h-full overflow-y-auto p-2"
+      style={{ backgroundColor: "var(--background)" }}
+    >
+      <div className="mb-3 px-2" style={{ backgroundColor: "var(--background)" }}>
+        <h3 className="text-xs font-semibold text-gray-200 uppercase tracking-wide">
           Ask Mode State
         </h3>
       </div>

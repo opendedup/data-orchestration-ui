@@ -44,8 +44,8 @@ export default function ModeSelector() {
             className={clsx(
               "flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-all",
               isActive
-                ? "bg-gray-700 text-white border border-gray-600"
-                : "text-gray-400 hover:text-gray-200 hover:bg-gray-800"
+                ? "border border-gray-600 bg-gray-700 text-white shadow-sm"
+                : "text-gray-200 hover:text-gray-50 hover:bg-gray-800 border border-transparent"
             )}
           >
             <Icon className="w-3.5 h-3.5" />

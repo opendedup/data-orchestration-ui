@@ -37,11 +37,16 @@ interface UseAgentStateReturn {
  */
 export function useAgentState(): UseAgentStateReturn {
   const { state } = useCoAgent({
-    name: "data_orchestration_agent",
+    name: "langgraph_orchestration_agent",
   });
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Log state changes for debugging
+  useEffect(() => {
+    console.log("[useAgentState] State updated:", state);
+  }, [state]);
 
   // Extract state data with safe defaults
   const queries: Query[] = (state?.["user:queries"] as Query[]) || [];

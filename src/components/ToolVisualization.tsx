@@ -18,31 +18,35 @@ export default function ToolVisualization() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "running":
-        return "bg-gray-700 text-gray-200";
+        return "bg-gray-800 text-gray-100 border border-gray-600";
       case "success":
-        return "bg-gray-600 text-gray-100";
+        return "bg-emerald-600 text-white border border-emerald-400";
       case "error":
-        return "bg-gray-800 text-red-300";
+        return "bg-gray-900 text-red-300 border border-red-400";
       default:
-        return "bg-gray-700 text-gray-300";
+        return "bg-gray-800 text-gray-200 border border-gray-600";
     }
   };
 
   return (
     <div className="space-y-2">
       {toolCalls.length === 0 ? (
-        <p className="text-gray-500 text-sm">No tool executions yet</p>
+        <p className="text-sm text-gray-200">No tool executions yet</p>
       ) : (
         toolCalls.map((call, idx) => (
-          <div key={idx} className="bg-gray-800 p-3 rounded-lg border border-gray-700">
+          <div key={idx} className="rounded-lg border border-gray-700 bg-gray-900 p-3 text-gray-100">
             <div className="flex items-center justify-between">
-              <span className="font-medium text-sm text-gray-100">{call.name}</span>
-              <span className={`px-2 py-1 rounded text-xs ${getStatusColor(call.status)}`}>
+              <span className="text-sm font-medium text-gray-50">{call.name}</span>
+              <span
+                className={`rounded px-2 py-1 text-xs font-semibold uppercase tracking-wide ${getStatusColor(
+                  call.status
+                )}`}
+              >
                 {call.status}
               </span>
             </div>
             {call.result && (
-              <p className="text-xs text-gray-300 mt-2">{call.result}</p>
+              <p className="mt-2 text-xs text-gray-200">{call.result}</p>
             )}
           </div>
         ))

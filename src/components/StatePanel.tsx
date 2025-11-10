@@ -6,26 +6,26 @@ import SessionInfo from "./SessionInfo";
 
 export default function StatePanel() {
   const { state } = useCoAgent({
-    name: "data_orchestration_agent",
+    name: "langgraph_orchestration_agent",
   });
 
   return (
-    <div className="h-full flex flex-col p-6 overflow-y-auto">
-      <h2 className="text-xl font-bold mb-4">Agent State & Visualizations</h2>
+    <div className="h-full flex flex-col overflow-y-auto p-6 text-gray-100">
+      <h2 className="mb-4 text-xl font-bold text-gray-50">Agent State & Visualizations</h2>
       
       {/* Session Information */}
       <SessionInfo state={state} />
       
       {/* Tool Execution Status */}
       <div className="mt-6">
-        <h3 className="text-lg font-semibold mb-3">Tool Executions</h3>
+        <h3 className="mb-3 text-lg font-semibold text-gray-50">Tool Executions</h3>
         <ToolVisualization />
       </div>
       
       {/* State Details */}
       <div className="mt-6">
-        <h3 className="text-lg font-semibold mb-3">Session State</h3>
-        <pre className="bg-white p-4 rounded-lg text-xs overflow-x-auto border">
+        <h3 className="mb-3 text-lg font-semibold text-gray-50">Session State</h3>
+        <pre className="overflow-x-auto rounded-lg border border-gray-700 bg-gray-900 p-4 text-xs text-gray-100">
           {JSON.stringify(state, null, 2)}
         </pre>
       </div>
